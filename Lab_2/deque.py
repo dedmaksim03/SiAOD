@@ -19,3 +19,9 @@ class Deque:
 
     def size(self):
         return len(self.items)
+
+    def prnt(self):
+        return self.items
+
+    def has(self, item):
+        return self.items.count(item) != 0
