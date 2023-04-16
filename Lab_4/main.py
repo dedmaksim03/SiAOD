@@ -4,10 +4,9 @@ import pandas as pd
 from binary_tree import BinarySearchTree
 from Lab_4.maps.map_rehash import MapReHash
 from Lab_4.maps.map_chain import MapChain
-from Lab_4.maps.map_simple_hash import MapSimpleHash
 
 
-def get_random_seq(lenght, n):
+def get_random_seq(lenght, n):  # Рандомная последовательность длины length и числами от 0 до n
     seq = []
     for i in range(lenght):
         seq.append(random.randint(0, n))
@@ -35,13 +34,6 @@ def binary_find(mas, number):
             else:
                 right -= 1
     return None
-
-
-'''def binary_tree_find(mas, number):
-    tree = BinarySearchTree()
-    for item in mas:
-        tree.put(item, mas.index(item))
-    return tree.get(number)'''
 
 
 def interpolating_find(mas, number):
@@ -92,37 +84,39 @@ def fibonacci_find(mas, number, fib_seq):
 
 
 def make_test(list_fun, list_classes):
-    size_mas = [100, 200, 300, 400]
-    s = get_random_seq(size_mas[-1], 10000)
-    s.sort()
-    results = {}
-    for fun in list_fun:
-        results[fun] = []
-        for i in size_mas:
-            new_s = s[:i]
-            find = 1  #  random.randint(0, len(new_s) - 1)
+    size_mas = [100, 200, 300, 400]  # Набор длин массивов для теста
+    s = get_random_seq(size_mas[-1], 10000)  # Генерируем одну длинную последовательность для дальнейшего использования
+    s.sort()  # Сортируем
+    results = {}  # Список результатов тестирования для вывода
 
-            if fun == fibonacci_find:
-                fib_seq = fibonacci(len(new_s))
+    for fun in list_fun:  # Проходимся по всем функциям поиска
+        results[fun] = []  # Для конкретной функции создаем список ее результатов
+        for i in size_mas:  # Будем менять длину тестируемой последовательности
+            new_s = s[:i]  # Берем кусок нужной длины, из нашей начальной длинной последовательности
+            find = random.randint(0, len(new_s) - 1)  # Индекс для поиска (можно поставить любую цифру < len(new_s)
+
+            if fun == fibonacci_find:  # Отдельно тестируем фибоначчи
+                fib_seq = fibonacci(len(new_s))  # Делаем предврарительную последовательность фибоначчи
                 start = time.time()
-                for j in range(10000):
+                for j in range(10000):  # Вызываем много раз функцию (иначе результат 0, сильно быстро работают)
                     fun(new_s, new_s[find], fib_seq)
-                results[fun].append((time.time() - start) * 1000)
+                results[fun].append((time.time() - start) * 1000)  # Записываем результат
             else:
                 start = time.time()
                 for j in range(10000):
                     fun(new_s, new_s[find])
                 results[fun].append((time.time() - start) * 1000)
-    for cls in list_classes:
+
+    for cls in list_classes:  # Проходимся по всем классам для поиска, и проделываем то же самое, что и выше
         results[cls] = []
         for i in size_mas:
             new_s = s[:i]
-            find = 1#random.randint(0, len(new_s) - 1)
+            find = random.randint(0, len(new_s) - 1)
 
-            if cls == BinarySearchTree:
+            if cls == BinarySearchTree:  # Отдельно сделаем для бинарного дерева из-за косяка
                 ex_cls = cls()
                 for i in range(len(new_s)):
-                    ex_cls.put(new_s[i], i)
+                    ex_cls.put(new_s[i], i)  # Косяк в этом: вставка происходит фактически (val, key), а не (key, val)
             else:
                 ex_cls = cls(len(new_s))
                 for i in range(len(new_s)):
@@ -166,13 +160,6 @@ if __name__ == '__main__':
     ]
 
     make_test(list_fun, list_cls)
-    '''tree = BinarySearchTree()
-    s = get_random_seq(20, 100)
-    s.sort()
-    for i in range(len(s)):
-        tree.put(s[i], i)
-    for i in range(len(s)):
-        print(tree.get(s[i]))'''
 
 
 
