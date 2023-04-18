@@ -1,9 +1,11 @@
 import random
+import copy
 import time
 import pandas as pd
 from binary_tree import BinarySearchTree
 from Lab_4.maps.map_rehash import MapReHash
 from Lab_4.maps.map_chain import MapChain
+from queens_on_desk import Desk, Cell
 
 
 def get_random_seq(lenght, n):  # Рандомная последовательность длины length и числами от 0 до n
@@ -146,6 +148,45 @@ def make_test(list_fun, list_classes):
     print(df)
 
 
+def queens_on_desk():
+    length = 64
+    queens = 8
+    step = 10
+    small_step = 3
+
+    desk = [0]*length
+    desk[0] = 1
+    before_cell = 0
+    queens -= 1
+    while queens > 0:
+        if queens == 4 or queens == 1:
+            desk[before_cell+small_step] = 1
+            before_cell += small_step
+        else:
+            desk[before_cell+step] = 1
+            before_cell += step
+        queens -= 1
+    return desk
+
+
+def put_queens():
+    desk = Desk(None, 8, [Cell()] * 64, 0)
+
+    while desk.queens > 0:
+        if desk.field[desk.now].get_value() == 0:
+            desk = Desk(desk, desk.queens-1, copy.deepcopy(desk.field), desk.now)  # Создаем новую доску
+            desk.field[desk.now] = Cell(value=1)  # Добавляем клетку
+            desk.refresh(desk.now)  # Обновляем поля "атаки" у новой доски
+
+        if desk.now == 63 and desk.queens > 0:  # Возврат к предыдущему состоянию
+            while desk.now > 62:
+                desk = desk.commit_desk
+
+        desk.now += 1
+
+    return desk.print_desk()
+
+
 if __name__ == '__main__':
     list_fun = [
         python_find,
@@ -158,8 +199,9 @@ if __name__ == '__main__':
         MapChain,
         MapReHash
     ]
+    #make_test(list_fun, list_cls)
 
-    make_test(list_fun, list_cls)
+    put_queens()
 
 
 
