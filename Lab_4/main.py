@@ -171,20 +171,25 @@ def queens_on_desk():
 
 def put_queens():
     desk = Desk(None, 8, [Cell()] * 64, 0)
+    number_desk = 0
 
-    while desk.queens > 0:
-        if desk.field[desk.now].get_value() == 0:
-            desk = Desk(desk, desk.queens-1, copy.deepcopy(desk.field), desk.now)  # Создаем новую доску
-            desk.field[desk.now] = Cell(value=1)  # Добавляем клетку
-            desk.refresh(desk.now)  # Обновляем поля "атаки" у новой доски
+    for i in range(3):
+        while desk.queens > 0:
+            if desk.field[desk.now].get_value() == 0:
+                desk = Desk(desk, desk.queens-1, copy.deepcopy(desk.field), desk.now)  # Создаем новую доску
+                desk.field[desk.now] = Cell(value=1)  # Добавляем клетку
+                desk.refresh(desk.now)  # Обновляем поля "атаки" у новой доски
 
-        if desk.now == 63 and desk.queens > 0:  # Возврат к предыдущему состоянию
-            while desk.now > 62:
-                desk = desk.commit_desk
+            if desk.now == 63 and desk.queens > 0:  # Возврат к предыдущему состоянию
+                while desk.now > 62:
+                    desk = desk.commit_desk
 
+            desk.now += 1
+        number_desk += 1
+        desk = desk.commit_desk
         desk.now += 1
-
-    return desk.print_desk()
+    print(number_desk)
+    desk.print_desk()
 
 
 if __name__ == '__main__':

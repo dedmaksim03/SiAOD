@@ -36,10 +36,13 @@ class MapReHash:
                 i += 1
             self.map[index] = Slot(key, val)
 
-    def get(self, val):
+    def get(self, val, with_delete=False):
         index = self.hash_function(val)
         if self.map[index].get_val() == val:
-            return self.map[index].get_key()
+            for_return = self.map[index].get_key()
+            if with_delete:
+                self.map[index] = Slot()
+            return for_return
         else:
             i = 1
             while self.map[index].get_val() != val:
@@ -47,7 +50,11 @@ class MapReHash:
                 i += 1
                 if i == self.length:
                     return None
-            return self.map[index].get_key()
+            for_return = self.map[index].get_key()
+            if with_delete:
+                self.map[index] = Slot()
+            return for_return
+
 
 
 class Slot:
